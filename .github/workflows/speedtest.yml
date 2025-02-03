@@ -1,0 +1,42 @@
+name: Cloudflare SpeedTest Automation
+
+on:
+  schedule:
+    # 每天 UTC 时间 0 点运行（北京时间 8 点）
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  run-speedtest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install CloudflareSpeedTest
+        run: |
+          # 下载最新版 CloudflareST（替换为实际版本）
+          wget https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.2/CloudflareST_linux_amd64.tar.gz
+          tar -zxvf CloudflareST_linux_amd64.tar.gz
+          chmod +x CloudflareST
+
+      - name: Run SpeedTest
+        run: |
+          # 执行测速，生成 CSV 文件
+          ./CloudflareST -dn 100 -sl 5 -url "https://speed.cloudflare.com/__down?bytes=10000000"
+
+      - name: Commit and Push Results
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          # 配置 Git 身份
+          git config --global user.name "Tomoe233"
+          git config --global user.email "1429521105@qq.com"
+
+          # 移动 CSV 文件到仓库目录（假设结果文件名为 result.csv）
+          mv result.csv results/
+
+          # 提交并推送
+          git add results/
+          git commit -m "Auto-Update SpeedTest Results: $(date +'%Y-%m-%d %H:%M:%S')"
+          git push "https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:main

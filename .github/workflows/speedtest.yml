@@ -13,13 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: true  # 启用持久化凭证
-          token: ${{ secrets.GH_TOKEN }}  # 直接传递 Token
+          persist-credentials: true  # 关键：启用持久化凭证
 
       - name: Install CloudflareSpeedTest
         run: |
-          # 下载最新版 CloudflareST（替换为实际版本）
-          wget https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.2/CloudflareST_linux_amd64.tar.gz
+          wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.5/CloudflareST_linux_amd64.tar.gz
           tar -zxvf CloudflareST_linux_amd64.tar.gz
           chmod +x CloudflareST
 
@@ -29,8 +27,6 @@ jobs:
           ./CloudflareST -tll 30 -tl 150 -dn 100 -sl 3 -url "https://speed.cloudflare.com/__down?bytes=10000000"
 
       - name: Commit and Push Results
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git config --global user.name "Tomoe233"
           git config --global user.email "1429521105@qq.com"

@@ -32,5 +32,7 @@ jobs:
           git config --global user.email "1429521105@qq.com"
           mv result.csv results/
           git add results/
+          # 设置时区为上海（UTC+8）
+          export TZ=Asia/Shanghai
           git commit -m "Auto-Update SpeedTest Results: $(date +'%Y-%m-%d %H:%M:%S')"
           git push origin HEAD:main

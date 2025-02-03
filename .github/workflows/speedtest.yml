@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # 启用持久化凭证
+          token: ${{ secrets.GH_TOKEN }}  # 直接传递 Token
 
       - name: Install CloudflareSpeedTest
         run: |
@@ -29,14 +32,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          # 配置 Git 身份
           git config --global user.name "Tomoe233"
           git config --global user.email "1429521105@qq.com"
-
-          # 移动 CSV 文件到仓库目录（假设结果文件名为 result.csv）
           mv result.csv results/
-
-          # 提交并推送
           git add results/
           git commit -m "Auto-Update SpeedTest Results: $(date +'%Y-%m-%d %H:%M:%S')"
-          git push "https://$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:main
+          git push origin HEAD:main

@@ -24,7 +24,7 @@ jobs:
       - name: Run SpeedTest
         run: |
           # 执行测速，生成 CSV 文件
-          ./CloudflareST -tll 30 -tl 150 -dn 100 -sl 3 -url "https://speed.cloudflare.com/__down?bytes=10000000"
+          ./CloudflareST -tll 30 -tl 150 -dn 100 -sl 5 -url "https://speed.cloudflare.com/__down?bytes=10000000"
 
       - name: Commit and Push Results
         run: |
